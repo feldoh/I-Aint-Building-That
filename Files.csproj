@@ -8,22 +8,17 @@
     <OutputPath>.\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	<OutputPath>..\$(SolutionName) - Release\</OutputPath>
+	<OutputPath>.\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ReleaseFiles Include="About\**;Common\**;1.4\**;loadFolders.xml"
-                  Exclude="About\About-Debug.xml;About\About-Release.xml;About\About.xml;1.4\Source\**" />
-    <AboutFiles Include="About\About-Debug.xml;About\About-Release.xml" />
-    <None Include=".*;About/About.xml" />
+                  Exclude="1.4\Source\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\Languages" />
   </ItemGroup>
   <Target Name="Clean" />
   <Target Name="Build">
-    <Copy SourceFiles="About\About-$(Configuration).xml" 
-          DestinationFiles="$(OutputPath)About\About.xml" 
-          SkipUnchangedFiles="true" />
     <Copy Condition=" '$(Configuration)' == 'Release' "
           SourceFiles="@(ReleaseFiles)"
           DestinationFiles="@(ReleaseFiles->'$(OutputPath)%(RelativeDir)%(Filename)%(Extension)')"
