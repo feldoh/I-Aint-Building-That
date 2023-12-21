@@ -73,12 +73,6 @@
     <ExtraFiles Include="../../../LoadFolders.xml;../../../LICENSE;../../../README.md" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\..\..\About\PublishedFileId.txt">
-      <Link>I Aint Building That\About\PublishedFileId.txt</Link>
-    </Content>
-  </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
   <Target Name="PostBuild" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
     <RemoveDir Condition="Exists('../../../Release')" Directories="../../../Release" />
