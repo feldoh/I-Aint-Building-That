@@ -9,15 +9,17 @@ namespace IAintBuildingThat
 	public class Settings : ModSettings
 	{
 		private const float RowHeight = 60f;
-		public HashSet<string> HiddenBuildables = new();
+		public HashSet<string> HiddenBuildables = [];
 		private Vector2 _scrollPosition = Vector2.zero;
 		private string _searchQuery = string.Empty;
 		private Dictionary<string, Lazy<BuildableDef>> cachedDefs = new();
 
 		public void HideBuildable(BuildableDef buildable)
 		{
+			if (buildable == null) return;
 			HiddenBuildables.Add(buildable.defName);
 			cachedDefs.SetOrAdd(buildable.defName, new Lazy<BuildableDef>(() => buildable));
+			Write();
 		}
 
 		public BuildableDef LookupDef(string buildable)

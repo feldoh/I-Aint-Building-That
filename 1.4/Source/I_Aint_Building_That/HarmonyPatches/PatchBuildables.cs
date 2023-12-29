@@ -21,7 +21,7 @@ namespace IAintBuildingThat.HarmonyPatches
 			Designator selectedDesignator = Find.DesignatorManager.SelectedDesignator ?? TrackDesignator.LatestDesignator;
 			if (selectedDesignator is not Designator_Place { PlacingDef: not null } dp) yield break;
 			yield return new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple(),
-				() => IAintBuildingThat.settings.HiddenBuildables.Add(dp.PlacingDef?.defName));
+				() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef));
 		}
 	}
 
