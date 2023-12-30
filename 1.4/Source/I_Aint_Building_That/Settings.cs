@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IAintBuildingThat.HarmonyPatches;
 using UnityEngine;
 using Verse;
 
@@ -16,6 +17,7 @@ namespace IAintBuildingThat
 
 		public void HideBuildable(BuildableDef buildable)
 		{
+			PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking = false;
 			if (buildable == null) return;
 			HiddenBuildables.Add(buildable.defName);
 			cachedDefs.SetOrAdd(buildable.defName, new Lazy<BuildableDef>(() => buildable));

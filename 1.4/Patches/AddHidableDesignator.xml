@@ -48,4 +48,11 @@
 			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
 		</value>
 	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
+		<value>
+			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
+		</value>
+	</Operation>
 </Patch>
