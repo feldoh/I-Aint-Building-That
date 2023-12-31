@@ -49,6 +49,22 @@
 		</value>
 	</Operation>
 
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]/placeWorkers</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]</xpath>
+			<value>
+				<placeWorkers />
+			</value>
+		</nomatch>
+	</Operation>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]/placeWorkers</xpath>
+		<value>
+			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
+		</value>
+	</Operation>
+
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
 		<value>
