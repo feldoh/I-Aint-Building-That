@@ -65,10 +65,13 @@
 		</value>
 	</Operation>
 
-	<Operation Class="PatchOperationAdd">
+	<Operation Class="PatchOperationConditional">
 		<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
-		<value>
-			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-		</value>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
+			<value>
+				<li>IAintBuildingThat.VisibilityPlaceWorker</li>
+			</value>
+		</match>
 	</Operation>
 </Patch>
