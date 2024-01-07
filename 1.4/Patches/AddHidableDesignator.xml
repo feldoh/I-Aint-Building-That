@@ -1,77 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Patch>
-	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath>
-		<nomatch Class="PatchOperationAdd">
-			<xpath>Defs/ThingDef[@Name="BuildingBase"]</xpath>
-			<value>
-				<placeWorkers />
-			</value>
-		</nomatch>
-	</Operation>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath>
-		<value>
-			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-		</value>
-	</Operation>
-
-	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/TerrainDef[@Name="FloorBase"]/placeWorkers</xpath>
-		<nomatch Class="PatchOperationAdd">
-			<xpath>Defs/TerrainDef[@Name="FloorBase"]</xpath>
-			<value>
-				<placeWorkers />
-			</value>
-		</nomatch>
-	</Operation>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/TerrainDef[@Name="FloorBase"]/placeWorkers</xpath>
-		<value>
-			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-		</value>
-	</Operation>
-
-	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/TerrainDef[defName="Bridge"]/placeWorkers</xpath>
-		<nomatch Class="PatchOperationAdd">
-			<xpath>Defs/TerrainDef[defName="Bridge"]</xpath>
-			<value>
-				<placeWorkers />
-			</value>
-		</nomatch>
-	</Operation>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/TerrainDef[defName="Bridge"]/placeWorkers</xpath>
-		<value>
-			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-		</value>
-	</Operation>
-
-	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]/placeWorkers</xpath>
-		<nomatch Class="PatchOperationAdd">
-			<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]</xpath>
-			<value>
-				<placeWorkers />
-			</value>
-		</nomatch>
-	</Operation>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/TerrainDef[@Name="NaturalTerrainBase"]/placeWorkers</xpath>
-		<value>
-			<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-		</value>
-	</Operation>
-
-	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
-		<match Class="PatchOperationAdd">
-			<xpath>Defs/ThingDef/placeWorkers[@Inherit="False"]</xpath>
-			<value>
-				<li>IAintBuildingThat.VisibilityPlaceWorker</li>
-			</value>
-		</match>
-	</Operation>
+	<!-- Example patch to make something hideable that isn't letting you hide it -->
+	<!-- <Operation Class="PatchOperationConditional"> -->
+	<!-- 	<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath> -->
+	<!-- 	<nomatch Class="PatchOperationAdd"> -->
+	<!-- 		<xpath>Defs/ThingDef[@Name="BuildingBase"]</xpath> -->
+	<!-- 		<value> -->
+	<!-- 			<placeWorkers /> -->
+	<!-- 		</value> -->
+	<!-- 	</nomatch> -->
+	<!-- </Operation> -->
+	<!-- <Operation Class="PatchOperationAdd"> -->
+	<!-- 	<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath> -->
+	<!-- 	<value> -->
+	<!-- 		<li>IAintBuildingThat.VisibilityPlaceWorker</li> -->
+	<!-- 	</value> -->
+	<!-- </Operation> -->
 </Patch>

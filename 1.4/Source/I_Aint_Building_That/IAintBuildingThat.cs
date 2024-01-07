@@ -10,8 +10,6 @@ namespace IAintBuildingThat
 
 		public IAintBuildingThat(ModContentPack content) : base(content)
 		{
-			Log.Message("Hello world from I Aint Building That");
-
 			// initialize settings
 			settings = GetSettings<Settings>();
 
