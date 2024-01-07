@@ -26,7 +26,7 @@ public static class IAintBuildingThatInit
 				?.Where(b => !(b.placeWorkers?.Contains(typeof(VisibilityPlaceWorker)) ?? false)) ?? new BuildableDef[] { })
 			.Do(b =>
 			{
-				b.placeWorkers ??= [];
+				if (b.placeWorkers == null && b.BuildableByPlayer) b.placeWorkers = [];
 				b.placeWorkers?.Add(typeof(VisibilityPlaceWorker));
 				List<PlaceWorker> placeWorkers = placeWorkersInstantiatedIntFieldInfo.GetValue(b) as List<PlaceWorker>;
 				placeWorkers?.Add((PlaceWorker)Activator.CreateInstance(typeof(VisibilityPlaceWorker)));

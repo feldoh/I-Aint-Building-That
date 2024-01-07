@@ -62,7 +62,7 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	static bool Prefix(Designator __instance, Event ev)
 	{
 		IsRightClicking = false;
-		if (ev.button != 1 || __instance is not Designator_Place { PlacingDef: not null } dp) return true;
+		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp) return true;
 		if (Find.WindowStack.IsOpen<FloatMenu>()) return true;
 		IsRightClicking = true;
 		return true;
@@ -71,7 +71,7 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	[HarmonyPostfix]
 	static void Postfix(Designator __instance, Event ev)
 	{
-		if (ev.button != 1 || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()) return;
+		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()) return;
 		Find.WindowStack.Add(new FloatMenu([
 			new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
 				() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef))
@@ -88,7 +88,7 @@ static class PatchInHideMenuOptionToBuildDesignatorProcessInput
 	static bool Prefix(Designator_Build __instance, Event ev)
 	{
 		CurrentPlacingDef = null;
-		if (ev.button != 1 || __instance is not { PlacingDef: not null } || !__instance.PlacingDef.MadeFromStuff) return true;
+		if (ev is not { button: 1 } || __instance is not { PlacingDef: not null } || !__instance.PlacingDef.MadeFromStuff) return true;
 		PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking = true;
 		CurrentPlacingDef = __instance.PlacingDef;
 		return true;
