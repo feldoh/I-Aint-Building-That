@@ -13,3 +13,4 @@ Portions of the materials used to create this content/mod are trademarks and/or 
 
 ## Thanks
 * Ludeon for the Game
+* Ranger Rick for the 1.5 corner tag
