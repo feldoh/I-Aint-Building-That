@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using IAintBuildingThat.HarmonyPatches;
 using RimWorld;
 using UnityEngine;
@@ -16,7 +15,8 @@ namespace IAintBuildingThat
 		private Vector2 _scrollPosition = Vector2.zero;
 		private string _searchQuery = string.Empty;
 		private Dictionary<string, Lazy<BuildableDef>> cachedDefs = new();
-		public List<Ability> HiddenAbilities = [];
+		internal List<CompAbilityHide> AllAbilityHideComponents = new List<CompAbilityHide>(32);
+
 		private enum Page : byte
 		{
 			Buildings, Abilities
@@ -51,6 +51,11 @@ namespace IAintBuildingThat
 			Listing_Standard options = new();
 			options.Begin(wrect);
 
+			if (_page == Page.Buildings && options.ButtonText("Switch to Abilities Page"))
+				_page = Page.Abilities;
+			else if (_page == Page.Abilities && options.ButtonText("Switch to Buildings Page"))
+				_page = Page.Buildings;
+
 			switch (_page)
 			{
 				case Page.Buildings:
@@ -64,7 +69,7 @@ namespace IAintBuildingThat
 
 						// Add a TextField for the search query
 						string lastSearch = _searchQuery;
-						float searchBarY = wrect.y;
+						float searchBarY = options.CurHeight;
 						Widgets.Label(new Rect(0, searchBarY, 120, 30f), "Taggerung_IAintBuildingThat_SearchLabel".Translate());
 						_searchQuery = Widgets.TextField(new Rect(130, searchBarY, wrect.width - 130, 30f), _searchQuery);
 						if (lastSearch != _searchQuery) _scrollPosition = Vector2.zero;
@@ -75,8 +80,8 @@ namespace IAintBuildingThat
 						List<string> filteredBuildables = HiddenBuildables.Where(MatchesFilter).ToList();
 
 						// Create a scrollable list
-						Rect viewRect = new(0, 0, wrect.width - 16f, filteredBuildables.Count * RowHeight);
-						Rect scrollRect = new(0, 80f, wrect.width, wrect.height - 80f);
+						Rect viewRect = new(0, options.CurHeight, wrect.width - 16f, filteredBuildables.Count * RowHeight);
+						Rect scrollRect = new(0, options.CurHeight + 30f, wrect.width, wrect.height - 80);
 						Widgets.BeginScrollView(scrollRect, ref _scrollPosition, viewRect);
 
 						float num = 0f;
@@ -107,19 +112,38 @@ namespace IAintBuildingThat
 					{
 						if (options.ButtonText("Restore All Hidden Defs"))
 						{
-							HiddenAbilities.Clear();
+							AllAbilityHideComponents.ForEach(c => c.hidden = false);
 						}
 
 						options.Gap();
 
+						if (Current.Game == null || Current.Game.World == null) break;
+
+						// Add a TextField for the search query
+						string lastSearch = _searchQuery;
+						float searchBarY = options.CurHeight;
+						Widgets.Label(new Rect(0, searchBarY, 120, 30f), "Taggerung_IAintBuildingThat_SearchLabel".Translate());
+						_searchQuery = Widgets.TextField(new Rect(130, searchBarY, wrect.width - 130, 30f), _searchQuery);
+						if (lastSearch != _searchQuery) _scrollPosition = Vector2.zero;
+
+						options.Gap();
+
+						var query = _searchQuery.Length < 1 ? AllAbilityHideComponents.Where(c => c.hidden) : 
+							AllAbilityHideComponents.Where(c => c.hidden && (c.parent.def?.LabelCap.Resolve()?.ToLowerInvariant()?.Contains(_searchQuery.ToLowerInvariant()) == true ||
+								c.parent.pawn?.Name?.ToStringFull?.ToLowerInvariant()?.Contains(_searchQuery.ToLowerInvariant()) == true));
+
+						if (query.EnumerableNullOrEmpty()) break;
+
 						// Create a scrollable list
-						Rect viewRect = new(0, 0, wrect.width - 16f, HiddenAbilities.Count * RowHeight);
-						Rect scrollRect = new(0, 80f, wrect.width, wrect.height - 80f);
+						Rect viewRect = new(0, 0, wrect.width - 16f, query.Count() * RowHeight);
+						Rect scrollRect = new(0, options.CurHeight + 30f, wrect.width, wrect.height - 80);
 						Widgets.BeginScrollView(scrollRect, ref _scrollPosition, viewRect);
 
 						float num = 0f;
-						foreach (var ability in HiddenAbilities)
+						foreach (var abilityComp in query)
 						{
+							var ability = abilityComp.parent;
+
 							float rowSectionWidth = (viewRect.width - 20) / 3;
 							Widgets.ThingIcon(new Rect(0f, num * RowHeight, rowSectionWidth, RowHeight - 5f), ability.pawn);
 							Widgets.DefLabelWithIcon(new Rect(rowSectionWidth, num * RowHeight, rowSectionWidth, RowHeight - 5f), ability.def);
@@ -127,8 +151,8 @@ namespace IAintBuildingThat
 							Rect rowRect = new Rect(rowSectionWidth*2 + 10, num * RowHeight, rowSectionWidth, RowHeight - 5f);
 							if (Widgets.ButtonText(new Rect(rowRect.x + 10, rowRect.y, rowRect.width - 20f, rowRect.height), $"{"Taggerung_IAintBuildingThat_RestoreText".Translate()} {ability.def.label}"))
 							{
-								HiddenAbilities.Remove(ability);
-								break; // break to avoid collection modified exception
+								abilityComp.hidden = false;
+								break;
 							}
 
 							num++;
@@ -138,14 +162,6 @@ namespace IAintBuildingThat
 
 					} break;
 			}
-
-			options.Gap();
-			options.Gap();
-
-			if (_page == Page.Buildings && options.ButtonText("Switch to Abilities Page"))
-				_page = Page.Abilities;
-			else if (_page == Page.Abilities && options.ButtonText("Switch to Buildings Page"))
-				_page = Page.Buildings;
 
 			options.End();
 		}
