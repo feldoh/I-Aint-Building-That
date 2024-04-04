@@ -1,10 +1,9 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
-using System;
-using System.Collections.Generic;
 using Verse;
 
 namespace IAintBuildingThat;
+
 internal class CompAbilityHide : CompAbilityEffect
 {
 	private static CompProperties_AbilityEffect _default_cached = new();
@@ -18,13 +17,13 @@ internal class CompAbilityHide : CompAbilityEffect
 		IAintBuildingThat.settings.AllAbilityHideComponents.Add(this);
 	}
 
-  public override bool ShouldHideGizmo => hidden;
+	public override bool ShouldHideGizmo => hidden;
 
-  public override bool Valid(LocalTargetInfo target, bool throwMessages = false) => true; // removes random nullreferenceexception +_+
+	public override bool Valid(LocalTargetInfo target, bool throwMessages = false) => true; // removes random nullreferenceexception +_+
 	public override bool Valid(GlobalTargetInfo target, bool throwMessages = false) => true;
 
-  public override void PostExposeData()
-  {
+	public override void PostExposeData()
+	{
 		Scribe_Values.Look(ref hidden, "hidden", false);
-  }
+	}
 }

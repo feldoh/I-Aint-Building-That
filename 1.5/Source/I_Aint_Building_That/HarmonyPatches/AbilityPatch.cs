@@ -1,6 +1,6 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using RimWorld;
-using System.Collections.Generic;
 using Verse;
 
 namespace IAintBuildingThat.HarmonyPatches;
@@ -27,7 +27,7 @@ class AbilityRightClickPatch()
 {
 	static void Postfix(Gizmo __instance, ref IEnumerable<FloatMenuOption> __result)
 	{
-		if (__instance is Command_Ability ab) 
+		if (__instance is Command_Ability ab)
 			__result = __result.AddItem(new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple(),
 				() => ab.Ability.CompOfType<CompAbilityHide>().hidden = true));
 	}

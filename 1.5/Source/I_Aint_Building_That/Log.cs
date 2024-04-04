@@ -5,7 +5,8 @@ namespace IAintBuildingThat;
 public class Log
 {
 	public static string ModTag = "<color=#b48af5>[IAintBuildingThat]</color>";
-	public static void Message (string msg)
+
+	public static void Message(string msg)
 	{
 		Verse.Log.Message($"{ModTag} {msg ?? "<null>"}");
 	}
@@ -21,5 +22,4 @@ public class Log
 		if (e != null)
 			Verse.Log.Error(e.ToString());
 	}
-
 }
