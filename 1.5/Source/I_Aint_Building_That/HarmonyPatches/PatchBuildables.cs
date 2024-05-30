@@ -95,7 +95,7 @@ static class PatchInHideMenuOptionToBuildDesignatorProcessInput
 	}
 }
 
-[HarmonyPatch(typeof(FloatMenu), MethodType.Constructor, [typeof(List<FloatMenuOption>)])]
+[HarmonyPatch(typeof(FloatMenu), MethodType.Constructor, typeof(List<FloatMenuOption>))]
 static class PatchInHideMenuOptionToFloatConstructor
 {
 	[HarmonyPrefix]

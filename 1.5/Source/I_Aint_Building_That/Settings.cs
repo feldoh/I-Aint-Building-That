@@ -52,10 +52,16 @@ namespace IAintBuildingThat
 			Listing_Standard options = new();
 			options.Begin(wrect);
 
-			if (_page == Page.Buildings && options.ButtonText("Switch to Abilities Page"))
-				_page = Page.Abilities;
-			else if (_page == Page.Abilities && options.ButtonText("Switch to Buildings Page"))
-				_page = Page.Buildings;
+			// Define the tabs
+			List<TabRecord> tabs =
+			[
+				new TabRecord("Buildings", () => _page = Page.Buildings, _page == Page.Buildings),
+				new TabRecord("Abilities", () => _page = Page.Abilities, _page == Page.Abilities)
+			];
+
+			// Draw the tabs
+			TabDrawer.DrawTabs(wrect, tabs);
+			options.Gap(50);
 
 			switch (_page)
 			{
@@ -70,9 +76,9 @@ namespace IAintBuildingThat
 
 					// Add a TextField for the search query
 					string lastSearch = _searchQuery;
-					float searchBarY = options.CurHeight;
-					Widgets.Label(new Rect(0, searchBarY, 120, 30f), "Taggerung_IAintBuildingThat_SearchLabel".Translate());
-					_searchQuery = Widgets.TextField(new Rect(130, searchBarY, wrect.width - 130, 30f), _searchQuery);
+					Rect searchRect = options.GetRect(30f);
+					Widgets.Label(searchRect.LeftPart(0.25f), "Taggerung_IAintBuildingThat_SearchLabel".Translate());
+					_searchQuery = Widgets.TextField(searchRect.RightPart(0.75f), _searchQuery);
 					if (lastSearch != _searchQuery) _scrollPosition = Vector2.zero;
 
 					options.Gap();
@@ -81,8 +87,8 @@ namespace IAintBuildingThat
 					List<string> filteredBuildables = HiddenBuildables.Where(MatchesFilter).ToList();
 
 					// Create a scrollable list
-					Rect viewRect = new(0, options.CurHeight, wrect.width - 16f, filteredBuildables.Count * RowHeight);
-					Rect scrollRect = new(0, options.CurHeight + 30f, wrect.width, wrect.height - 80);
+					Rect scrollRect = new(0, options.CurHeight + 10f, wrect.width, wrect.height - 80);
+					Rect viewRect = new(0, 0, wrect.width - 10, filteredBuildables.Count * RowHeight);
 					Widgets.BeginScrollView(scrollRect, ref _scrollPosition, viewRect);
 
 					float num = 0f;
