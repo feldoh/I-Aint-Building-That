@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LanguageData>
 	<Taggerung_IAintBuildingThat_HideButtonText>Ocultar botón</Taggerung_IAintBuildingThat_HideButtonText>
+	<Taggerung_IAintBuildingThat_HideAllButtonText>Ocultar todo</Taggerung_IAintBuildingThat_HideAllButtonText>
 	<Taggerung_IAintBuildingThat_RestoreText>Restaurar</Taggerung_IAintBuildingThat_RestoreText>
 	<Taggerung_IAintBuildingThat_SearchLabel>Filtrar</Taggerung_IAintBuildingThat_SearchLabel>
 </LanguageData>

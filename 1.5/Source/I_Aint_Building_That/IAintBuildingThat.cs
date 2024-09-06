@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using UnityEngine;
 using Verse;
 
@@ -7,6 +8,8 @@ namespace IAintBuildingThat
 	public class IAintBuildingThat : Mod
 	{
 		public static Settings settings;
+		public static Dictionary<DesignatorDropdownGroupDef, BuildableDef> DropdownGroupFirstDef = new();
+		public static Dictionary<DesignatorDropdownGroupDef, HashSet<BuildableDef>> DropdownGroupDefs = new();
 
 		public IAintBuildingThat(ModContentPack content) : base(content)
 		{

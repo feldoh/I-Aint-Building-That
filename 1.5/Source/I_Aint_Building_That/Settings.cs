@@ -14,7 +14,7 @@ namespace IAintBuildingThat
 		private Vector2 _scrollPosition = Vector2.zero;
 		private string _searchQuery = string.Empty;
 		private Dictionary<string, Lazy<BuildableDef>> cachedDefs = new();
-		internal List<CompAbilityHide> AllAbilityHideComponents = new List<CompAbilityHide>(32);
+		internal List<CompAbilityHide> AllAbilityHideComponents = new(32);
 
 		private enum Page : byte
 		{
@@ -31,6 +31,7 @@ namespace IAintBuildingThat
 			HiddenBuildables.Add(buildable.defName);
 			cachedDefs.SetOrAdd(buildable.defName, new Lazy<BuildableDef>(() => buildable));
 			Write();
+			buildable.designationCategory.DirtyCache();
 		}
 
 		public BuildableDef LookupDef(string buildable)
@@ -69,6 +70,11 @@ namespace IAintBuildingThat
 				{
 					if (options.ButtonText("Restore All Hidden Defs"))
 					{
+						foreach (var hiddenBuildable in cachedDefs)
+						{
+							hiddenBuildable.Value?.Value?.designationCategory?.DirtyCache();
+						}
+
 						HiddenBuildables.Clear();
 					}
 
@@ -108,6 +114,7 @@ namespace IAintBuildingThat
 							    $"{"Taggerung_IAintBuildingThat_RestoreText".Translate()} {buildable}"))
 						{
 							HiddenBuildables.Remove(buildable);
+							if (cachedDefs.TryGetValue(buildable, out var buildableDef)) buildableDef.Value?.designationCategory?.DirtyCache();
 							break; // break to avoid collection modified exception
 						}
 
@@ -137,10 +144,10 @@ namespace IAintBuildingThat
 
 					options.Gap();
 
-					var query = _searchQuery.Length < 1
+					var query = (_searchQuery.Length < 1
 						? AllAbilityHideComponents.Where(c => c.hidden)
 						: AllAbilityHideComponents.Where(c => c.hidden && (c.parent.def?.LabelCap.Resolve()?.ToLowerInvariant()?.Contains(_searchQuery.ToLowerInvariant()) == true ||
-						                                                   c.parent.pawn?.Name?.ToStringFull?.ToLowerInvariant()?.Contains(_searchQuery.ToLowerInvariant()) == true));
+						                                                   c.parent.pawn?.Name?.ToStringFull?.ToLowerInvariant()?.Contains(_searchQuery.ToLowerInvariant()) == true))).ToList();
 
 					if (query.EnumerableNullOrEmpty()) break;
 

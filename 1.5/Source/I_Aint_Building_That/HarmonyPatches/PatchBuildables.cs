@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using JetBrains.Annotations;
 using RimWorld;
@@ -40,13 +41,25 @@ static class PatchInHideMenuOptionToDesignator
 			case Designator_Dropdown dd:
 			{
 				HashSet<string> alreadyGone = [..IAintBuildingThat.settings.HiddenBuildables];
+				FloatMenuOption hideAll = null;
 				foreach (Designator ddElement in dd.Elements)
 				{
-					if (ddElement is not Designator_Place { PlacingDef: not null } ddBuildable || !alreadyGone.Add(ddBuildable.PlacingDef.defName)) continue;
+					if (ddElement is not Designator_Place { PlacingDef: not null } ddBuildable) continue;
+					if (!IAintBuildingThat.DropdownGroupDefs.TryGetValue(ddBuildable.PlacingDef.designatorDropdown, out var groupDefs))
+					{
+						IAintBuildingThat.DropdownGroupDefs.SetOrAdd(ddBuildable.PlacingDef.designatorDropdown, [ddBuildable.PlacingDef]);
+					}
+					else
+					{
+						groupDefs.Add(ddBuildable.PlacingDef);
+					}
+					if (!alreadyGone.Add(ddBuildable.PlacingDef.defName)) continue;
 					yield return new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple() + ": " + ddBuildable.LabelCap,
 						() => IAintBuildingThat.settings.HideBuildable(ddBuildable.PlacingDef));
+					hideAll ??= new FloatMenuOption("Taggerung_IAintBuildingThat_HideAllButtonText".TranslateSimple(),
+						() => IAintBuildingThat.DropdownGroupDefs[ddBuildable.PlacingDef.designatorDropdown].Do(IAintBuildingThat.settings.HideBuildable));
 				}
-
+				if (hideAll != null) yield return hideAll;
 				break;
 			}
 		}
@@ -72,10 +85,28 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	static void Postfix(Designator __instance, Event ev)
 	{
 		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()) return;
-		Find.WindowStack.Add(new FloatMenu([
-			new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
-				() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef))
-		]));
+		List<FloatMenuOption> floatMenuOptions = [];
+		if (dp.PlacingDef.designatorDropdown is {} dd)
+		{
+			if (!IAintBuildingThat.DropdownGroupDefs.TryGetValue(dd, out var groupDefs))
+			{
+				IAintBuildingThat.DropdownGroupDefs.SetOrAdd(dd, [dp.PlacingDef]);
+			}
+			else
+			{
+				groupDefs.Add(dp.PlacingDef);
+			}
+
+			if (!IAintBuildingThat.DropdownGroupFirstDef.TryGetValue(dd, out var firstDesignatorInGroup) || firstDesignatorInGroup == dp.PlacingDef)
+			{
+				if (firstDesignatorInGroup == null) IAintBuildingThat.DropdownGroupFirstDef.SetOrAdd(dd, dp.PlacingDef);
+				floatMenuOptions.Add(new FloatMenuOption("Taggerung_IAintBuildingThat_HideAllButtonText".TranslateSimple(),
+					() => IAintBuildingThat.DropdownGroupDefs[dd].Do(IAintBuildingThat.settings.HideBuildable)));
+			}
+		}
+		floatMenuOptions.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
+			() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef)));
+		Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
 	}
 }
 
@@ -104,6 +135,25 @@ static class PatchInHideMenuOptionToFloatConstructor
 		if (!PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking || PatchInHideMenuOptionToBuildDesignatorProcessInput.CurrentPlacingDef is not { } dp) return true;
 		options.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
 			() => IAintBuildingThat.settings.HideBuildable(dp)));
+
+		if (dp.designatorDropdown is {} dd)
+		{
+			if (!IAintBuildingThat.DropdownGroupDefs.TryGetValue(dd, out var groupDefs))
+			{
+				IAintBuildingThat.DropdownGroupDefs.SetOrAdd(dd, [dp]);
+			}
+			else
+			{
+				groupDefs.Add(dp);
+			}
+
+			if (!IAintBuildingThat.DropdownGroupFirstDef.TryGetValue(dd, out var firstDesignatorInGroup) || firstDesignatorInGroup == dp)
+			{
+				if (firstDesignatorInGroup == null) IAintBuildingThat.DropdownGroupFirstDef.SetOrAdd(dd, dp);
+				options.Add(new FloatMenuOption("Taggerung_IAintBuildingThat_HideAllButtonText".TranslateSimple(),
+					() => IAintBuildingThat.DropdownGroupDefs[dd].Do(IAintBuildingThat.settings.HideBuildable)));
+			}
+		}
 		return true;
 	}
 }

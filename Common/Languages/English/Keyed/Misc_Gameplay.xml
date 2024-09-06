@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LanguageData>
 	<Taggerung_IAintBuildingThat_HideButtonText>Hide button</Taggerung_IAintBuildingThat_HideButtonText>
+	<Taggerung_IAintBuildingThat_HideAllButtonText>Hide All</Taggerung_IAintBuildingThat_HideAllButtonText>
 	<Taggerung_IAintBuildingThat_RestoreText>Restore</Taggerung_IAintBuildingThat_RestoreText>
 	<Taggerung_IAintBuildingThat_SearchLabel>Filter</Taggerung_IAintBuildingThat_SearchLabel>
 </LanguageData>
