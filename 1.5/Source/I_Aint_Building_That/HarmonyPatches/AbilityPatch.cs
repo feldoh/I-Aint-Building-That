@@ -27,8 +27,13 @@ class AbilityRightClickPatch()
 {
 	static void Postfix(Gizmo __instance, ref IEnumerable<FloatMenuOption> __result)
 	{
-		if (__instance is Command_Ability ab)
-			__result = __result.AddItem(new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple(),
-				() => ab.Ability.CompOfType<CompAbilityHide>().hidden = true));
+		if (__instance is not Command_Ability ab || ab.Ability.CompOfType<CompAbilityHide>() is not {} compAbilityHide) return;
+
+		string menuText = compAbilityHide.hidden
+			? "Taggerung_IAintBuildingThat_RestoreText"
+			: "Taggerung_IAintBuildingThat_HideButtonText";
+		
+		__result = __result.AddItem(new FloatMenuOption(menuText.TranslateSimple(),
+				() => compAbilityHide.hidden = !compAbilityHide.hidden));
 	}
 }

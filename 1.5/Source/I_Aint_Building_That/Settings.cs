@@ -34,6 +34,13 @@ namespace IAintBuildingThat
 			buildable.designationCategory.DirtyCache();
 		}
 
+		public void RestoreBuildable(BuildableDef buildable)
+		{
+			if (buildable == null) return;
+			HiddenBuildables.Remove(buildable.defName);
+			buildable.designationCategory.DirtyCache();
+		}
+
 		public BuildableDef LookupDef(string buildable)
 		{
 			cachedDefs.TryGetValue(buildable, out Lazy<BuildableDef> cachedDef);
@@ -68,7 +75,7 @@ namespace IAintBuildingThat
 			{
 				case Page.Buildings:
 				{
-					if (options.ButtonText("Restore All Hidden Defs"))
+					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText"))
 					{
 						foreach (var hiddenBuildable in cachedDefs)
 						{

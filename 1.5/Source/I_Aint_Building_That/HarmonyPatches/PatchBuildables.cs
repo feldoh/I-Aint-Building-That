@@ -35,8 +35,17 @@ static class PatchInHideMenuOptionToDesignator
 		switch (__instance)
 		{
 			case Designator_Place { PlacingDef: not null } dp:
-				yield return new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple() + ": " + dp.LabelCap,
-					() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef));
+
+				if (IAintBuildingThat.settings.HiddenBuildables.Contains(dp.PlacingDef.defName))
+				{
+					yield return new FloatMenuOption("Taggerung_IAintBuildingThat_RestoreText".TranslateSimple() + ": " + dp.LabelCap,
+						() => IAintBuildingThat.settings.RestoreBuildable(dp.PlacingDef));
+				}
+				else
+				{
+					yield return new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple() + ": " + dp.LabelCap,
+						() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef));
+				}
 				break;
 			case Designator_Dropdown dd:
 			{
@@ -53,7 +62,13 @@ static class PatchInHideMenuOptionToDesignator
 					{
 						groupDefs.Add(ddBuildable.PlacingDef);
 					}
-					if (!alreadyGone.Add(ddBuildable.PlacingDef.defName)) continue;
+
+					if (!alreadyGone.Add(ddBuildable.PlacingDef.defName))
+					{
+						yield return new FloatMenuOption("Taggerung_IAintBuildingThat_RestoreText".TranslateSimple() + ": " + ddBuildable.LabelCap,
+							() => IAintBuildingThat.settings.RestoreBuildable(ddBuildable.PlacingDef));
+						continue;
+					}
 					yield return new FloatMenuOption("Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple() + ": " + ddBuildable.LabelCap,
 						() => IAintBuildingThat.settings.HideBuildable(ddBuildable.PlacingDef));
 					hideAll ??= new FloatMenuOption("Taggerung_IAintBuildingThat_HideAllButtonText".TranslateSimple(),
@@ -104,8 +119,17 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 					() => IAintBuildingThat.DropdownGroupDefs[dd].Do(IAintBuildingThat.settings.HideBuildable)));
 			}
 		}
-		floatMenuOptions.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
-			() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef)));
+
+		if (IAintBuildingThat.settings.HiddenBuildables.Contains(dp.PlacingDef.defName))
+		{
+			floatMenuOptions.Add(new FloatMenuOption("Taggerung_IAintBuildingThat_RestoreText".TranslateSimple() + ": " + dp.LabelCap,
+				() => IAintBuildingThat.settings.RestoreBuildable(dp.PlacingDef)));
+		}
+		else
+		{
+			floatMenuOptions.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
+				() => IAintBuildingThat.settings.HideBuildable(dp.PlacingDef)));
+		}
 		Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
 	}
 }
@@ -133,9 +157,18 @@ static class PatchInHideMenuOptionToFloatConstructor
 	static bool Prefix(ref List<FloatMenuOption> options)
 	{
 		if (!PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking || PatchInHideMenuOptionToBuildDesignatorProcessInput.CurrentPlacingDef is not { } dp) return true;
-		options.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
-			() => IAintBuildingThat.settings.HideBuildable(dp)));
-
+		
+		if (IAintBuildingThat.settings.HiddenBuildables.Contains(dp.defName))
+		{
+			options.Add(new FloatMenuOption("Taggerung_IAintBuildingThat_RestoreText".TranslateSimple() + ": " + dp.LabelCap,
+				() => IAintBuildingThat.settings.RestoreBuildable(dp)));
+		}
+		else
+		{
+			options.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
+				() => IAintBuildingThat.settings.HideBuildable(dp)));
+		}
+		
 		if (dp.designatorDropdown is {} dd)
 		{
 			if (!IAintBuildingThat.DropdownGroupDefs.TryGetValue(dd, out var groupDefs))
