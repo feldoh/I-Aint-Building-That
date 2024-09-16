@@ -4,4 +4,7 @@
 	<Taggerung_IAintBuildingThat_HideAllButtonText>Hide All</Taggerung_IAintBuildingThat_HideAllButtonText>
 	<Taggerung_IAintBuildingThat_RestoreText>Restore</Taggerung_IAintBuildingThat_RestoreText>
 	<Taggerung_IAintBuildingThat_SearchLabel>Filter</Taggerung_IAintBuildingThat_SearchLabel>
+	<Taggerung_IAintBuildingThat_RestoreAllButtonText>Restore All Hidden Defs</Taggerung_IAintBuildingThat_RestoreAllButtonText>
+	<Taggerung_IAintBuildingThat_BuildingsTabText>Buildings</Taggerung_IAintBuildingThat_BuildingsTabText>
+	<Taggerung_IAintBuildingThat_AbilitiesTabText>Abilities</Taggerung_IAintBuildingThat_AbilitiesTabText>
 </LanguageData>
