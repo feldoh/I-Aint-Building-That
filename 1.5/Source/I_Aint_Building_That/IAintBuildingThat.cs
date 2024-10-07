@@ -32,7 +32,7 @@ namespace IAintBuildingThat
 
 		public override string SettingsCategory()
 		{
-			return "I Aint Building That";
+			return "Taggerung_IAintBuildingThat_SettingsCategory".Translate();
 		}
 	}
 }

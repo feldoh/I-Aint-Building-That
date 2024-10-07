@@ -63,8 +63,8 @@ namespace IAintBuildingThat
 			// Define the tabs
 			List<TabRecord> tabs =
 			[
-				new TabRecord("Taggerung_IAintBuildingThat_BuildingsTabText", () => _page = Page.Buildings, _page == Page.Buildings),
-				new TabRecord("Taggerung_IAintBuildingThat_AbilitiesTabText", () => _page = Page.Abilities, _page == Page.Abilities)
+				new TabRecord("Taggerung_IAintBuildingThat_BuildingsTabText".Translate(), () => _page = Page.Buildings, _page == Page.Buildings),
+				new TabRecord("Taggerung_IAintBuildingThat_AbilitiesTabText".Translate(), () => _page = Page.Abilities, _page == Page.Abilities)
 			];
 
 			// Draw the tabs
@@ -75,7 +75,7 @@ namespace IAintBuildingThat
 			{
 				case Page.Buildings:
 				{
-					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText"))
+					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText".Translate()))
 					{
 						foreach (var hiddenBuildable in cachedDefs)
 						{
@@ -133,7 +133,7 @@ namespace IAintBuildingThat
 					break;
 				case Page.Abilities:
 				{
-					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText"))
+					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText".Translate()))
 					{
 						AllAbilityHideComponents.ForEach(c => c.hidden = false);
 					}
