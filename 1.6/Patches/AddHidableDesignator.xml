@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Patch>
+	<!-- Example patch to make something hideable that isn't letting you hide it -->
+	<!-- <Operation Class="PatchOperationConditional"> -->
+	<!-- 	<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath> -->
+	<!-- 	<nomatch Class="PatchOperationAdd"> -->
+	<!-- 		<xpath>Defs/ThingDef[@Name="BuildingBase"]</xpath> -->
+	<!-- 		<value> -->
+	<!-- 			<placeWorkers /> -->
+	<!-- 		</value> -->
+	<!-- 	</nomatch> -->
+	<!-- </Operation> -->
+	<!-- <Operation Class="PatchOperationAdd"> -->
+	<!-- 	<xpath>Defs/ThingDef[@Name="BuildingBase"]/placeWorkers</xpath> -->
+	<!-- 	<value> -->
+	<!-- 		<li>IAintBuildingThat.VisibilityPlaceWorker</li> -->
+	<!-- 	</value> -->
+	<!-- </Operation> -->
+</Patch>
