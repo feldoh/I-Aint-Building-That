@@ -69,13 +69,10 @@
     <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6-*"/>
   </ItemGroup>
   <ItemGroup>
-    <ExtraFiles Include="..\..\..\CONTINUITY.md">
-      <Link>I Aint Building That\CONTINUITY.md</Link>
-    </ExtraFiles>
     <ReleaseFiles Include="../../../1.*/**" Exclude="../../../1.*/Source/**;**/*.pdb" />
     <AboutFiles Include="../../../About/**" Exclude="../../../About/*.png~" />
     <CommonFiles Include="../../../Common/**" />
-    <ExtraFiles Include="../../../LoadFolders.xml;../../../LICENSE;../../../README.md" />
+    <ExtraFiles Include="../../../LoadFolders.xml;../../../LICENSE;../../../README.md;../../../CONTINUITY.md" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
     <RemoveDir Condition="Exists('../../../Release')" Directories="../../../Release" />
@@ -85,6 +82,10 @@
     <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'../../../Release/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
     <Copy SourceFiles="@(ExtraFiles)" DestinationFolder="../../../Release/" SkipUnchangedFiles="false" />
     <ZipDirectory DestinationFile="../../../IAintBuildingThat.zip" SourceDirectory="../../../Release" />
+    <ItemGroup>
+      <ReleaseFolder Include="../../../Release/**" />
+      <ReleaseFolder Condition=" '$(Configuration)' == 'Debug' " Include="../../../1.*/Assemblies/*.pdb" />
+    </ItemGroup>
     <RemoveDir Condition="Exists('$(SteamModsPath)')" Directories="$(SteamModsPath)/$(AssemblyName)" ContinueOnError="true"/>
     <Copy Condition="Exists('$(SteamModsPath)')" SourceFiles="@(ReleaseFolder)" DestinationFiles="@(ReleaseFolder->'$(SteamModsPath)/$(AssemblyName)/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>

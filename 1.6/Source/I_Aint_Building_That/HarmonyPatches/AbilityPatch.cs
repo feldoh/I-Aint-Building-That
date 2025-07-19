@@ -23,23 +23,6 @@ class AbilityClear
 	static void Prefix() => IAintBuildingThat.settings.AllAbilityHideComponents.Clear();
 }
 
-// public override void ProcessInput(Event ev)
-// {
-// 	base.ProcessInput(ev);
-// 	Find.WindowStack.Add((Window) new FloatMenu(new List<FloatMenuOption>()
-// 	{
-// 		new FloatMenuOption((string) "CommandBedSetForColonistsLabel".Translate(), (Action) (() => this.bed.SetBedOwnerTypeByInterface(BedOwnerType.Colonist)), Command_SetBedOwnerType.ForColonistsTex, Color.white),
-// 		new FloatMenuOption((string) "CommandBedSetForPrisonersLabel".Translate(), (Action) (() =>
-// 		{
-// 			if (!Building_Bed.RoomCanBePrisonCell(this.bed.GetRoom()) && !this.bed.ForPrisoners)
-// 				Messages.Message((string) "CommandBedSetForPrisonersFailOutdoors".Translate(), (LookTargets) (Thing) this.bed, MessageTypeDefOf.RejectInput, false);
-// 			else
-// 				this.bed.SetBedOwnerTypeByInterface(BedOwnerType.Prisoner);
-// 		}), Command_SetBedOwnerType.ForPrisonersTex, Color.white),
-// 		new FloatMenuOption((string) "CommandBedSetForSlavesLabel".Translate(), (Action) (() => this.bed.SetBedOwnerTypeByInterface(BedOwnerType.Slave)), Command_SetBedOwnerType.ForSlavesTex, Color.white)
-// 	}));
-// }
-// }
 [HarmonyPatch(typeof(Command_Ability), nameof(Command_Ability.ProcessInput))]
 class ProcessInputPatch
 {
