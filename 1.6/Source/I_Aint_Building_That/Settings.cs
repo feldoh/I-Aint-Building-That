@@ -11,6 +11,7 @@ namespace IAintBuildingThat
 	{
 		private const float RowHeight = 60f;
 		public HashSet<string> HiddenBuildables = [];
+		public bool showHiddenButtons = false;
 		private Vector2 _scrollPosition = Vector2.zero;
 		private string _searchQuery = string.Empty;
 		private Dictionary<string, Lazy<BuildableDef>> cachedDefs = new();
@@ -19,7 +20,8 @@ namespace IAintBuildingThat
 		private enum Page : byte
 		{
 			Buildings,
-			Abilities
+			Abilities,
+			General
 		}
 
 		private Page _page = Page.Buildings;
@@ -63,8 +65,9 @@ namespace IAintBuildingThat
 			// Define the tabs
 			List<TabRecord> tabs =
 			[
-				new TabRecord("Taggerung_IAintBuildingThat_BuildingsTabText".Translate(), () => _page = Page.Buildings, _page == Page.Buildings),
-				new TabRecord("Taggerung_IAintBuildingThat_AbilitiesTabText".Translate(), () => _page = Page.Abilities, _page == Page.Abilities)
+				new("Taggerung_IAintBuildingThat_BuildingsTabText".Translate(), () => _page = Page.Buildings, _page == Page.Buildings),
+				new("Taggerung_IAintBuildingThat_AbilitiesTabText".Translate(), () => _page = Page.Abilities, _page == Page.Abilities),
+				new("Taggerung_IAintBuildingThat_GeneralTabText".Translate(), () => _page = Page.General, _page == Page.General)
 			];
 
 			// Draw the tabs
@@ -73,6 +76,12 @@ namespace IAintBuildingThat
 
 			switch (_page)
 			{
+				case Page.General:
+				{
+					options.CheckboxLabeled("Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel".Translate(),
+						ref showHiddenButtons, "Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip".Translate());
+				}
+					break;
 				case Page.Buildings:
 				{
 					if (options.ButtonText("Taggerung_IAintBuildingThat_RestoreAllButtonText".Translate()))
@@ -195,6 +204,7 @@ namespace IAintBuildingThat
 		{
 			base.ExposeData();
 			Scribe_Collections.Look(ref HiddenBuildables, "hiddenBuildables", LookMode.Value);
+			Scribe_Values.Look(ref showHiddenButtons, "showHiddenButtons", false);
 		}
 	}
 }
