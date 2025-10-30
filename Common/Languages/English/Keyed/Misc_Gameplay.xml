@@ -8,4 +8,7 @@
 	<Taggerung_IAintBuildingThat_BuildingsTabText>Buildings</Taggerung_IAintBuildingThat_BuildingsTabText>
 	<Taggerung_IAintBuildingThat_AbilitiesTabText>Abilities</Taggerung_IAintBuildingThat_AbilitiesTabText>
 	<Taggerung_IAintBuildingThat_SettingsCategory>I Aint Building That</Taggerung_IAintBuildingThat_SettingsCategory>
+	<Taggerung_IAintBuildingThat_GeneralTabText>General</Taggerung_IAintBuildingThat_GeneralTabText>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>Show Hidden Buttons</Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>When enabled disables the button hiding.</Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>
 </LanguageData>

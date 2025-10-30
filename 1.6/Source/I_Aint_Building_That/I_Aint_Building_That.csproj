@@ -88,6 +88,7 @@
     </ItemGroup>
     <RemoveDir Condition="Exists('$(SteamModsPath)')" Directories="$(SteamModsPath)/$(AssemblyName)" ContinueOnError="true"/>
     <Copy Condition="Exists('$(SteamModsPath)')" SourceFiles="@(ReleaseFolder)" DestinationFiles="@(ReleaseFolder->'$(SteamModsPath)/$(AssemblyName)/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Message Condition="Exists('$(SteamModsPath)/$(AssemblyName)')" Importance="high" Text="Copied to $(SteamModsPath)/$(AssemblyName)" />
   </Target>
   <PropertyGroup Condition="Exists('../../../../../RimWorldWin64_Data')">
     <StartAction>Program</StartAction>
