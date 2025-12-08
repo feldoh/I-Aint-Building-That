@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LanguageData>
+	<Taggerung_IAintBuildingThat_HideButtonText>隐藏</Taggerung_IAintBuildingThat_HideButtonText>
+	<Taggerung_IAintBuildingThat_HideAllButtonText>隐藏全部</Taggerung_IAintBuildingThat_HideAllButtonText>
+	<Taggerung_IAintBuildingThat_RestoreText>恢复</Taggerung_IAintBuildingThat_RestoreText>
+	<Taggerung_IAintBuildingThat_SearchLabel>筛选</Taggerung_IAintBuildingThat_SearchLabel>
+	<Taggerung_IAintBuildingThat_RestoreAllButtonText>恢复所有隐藏项</Taggerung_IAintBuildingThat_RestoreAllButtonText>
+	<Taggerung_IAintBuildingThat_BuildingsTabText>建筑</Taggerung_IAintBuildingThat_BuildingsTabText>
+	<Taggerung_IAintBuildingThat_AbilitiesTabText>能力</Taggerung_IAintBuildingThat_AbilitiesTabText>
+	<Taggerung_IAintBuildingThat_SettingsCategory>隐藏图标</Taggerung_IAintBuildingThat_SettingsCategory>
+	<Taggerung_IAintBuildingThat_GeneralTabText>通用</Taggerung_IAintBuildingThat_GeneralTabText>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>显示隐藏按钮</Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>启用后将禁用按钮隐藏功能。</Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>
+</LanguageData>
