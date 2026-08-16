@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using JetBrains.Annotations;
 using RimWorld;
@@ -31,6 +32,10 @@ static class PatchInHideMenuOptionToDesignator
 		{
 			yield return opt;
 		}
+
+		// A configured combo opts the user in to "only show the hide menu while the combo is held",
+		// so a plain right-click passes straight through to the game / other mods.
+		if (!IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) yield break;
 
 		switch (__instance)
 		{
@@ -90,8 +95,9 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	static bool Prefix(Designator __instance, Event ev)
 	{
 		IsRightClicking = false;
-		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp) return true;
-		if (Find.WindowStack.IsOpen<FloatMenu>()) return true;
+		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null }
+		    || Find.WindowStack.IsOpen<FloatMenu>()
+		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return true;
 		IsRightClicking = true;
 		return true;
 	}
@@ -99,7 +105,8 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	[HarmonyPostfix]
 	static void Postfix(Designator __instance, Event ev)
 	{
-		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()) return;
+		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()
+		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return;
 		List<FloatMenuOption> floatMenuOptions = [];
 		if (dp.PlacingDef.designatorDropdown is {} dd)
 		{
@@ -143,7 +150,8 @@ static class PatchInHideMenuOptionToBuildDesignatorProcessInput
 	static bool Prefix(Designator_Build __instance, Event ev)
 	{
 		CurrentPlacingDef = null;
-		if (ev is not { button: 1 } || __instance is not { PlacingDef: not null } || !__instance.PlacingDef.MadeFromStuff) return true;
+		if (ev is not { button: 1 } || __instance is not { PlacingDef: not null } || !__instance.PlacingDef.MadeFromStuff
+		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return true;
 		PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking = true;
 		CurrentPlacingDef = __instance.PlacingDef;
 		return true;
@@ -156,8 +164,18 @@ static class PatchInHideMenuOptionToFloatConstructor
 	[HarmonyPrefix]
 	static bool Prefix(ref List<FloatMenuOption> options)
 	{
-		if (!PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking || PatchInHideMenuOptionToBuildDesignatorProcessInput.CurrentPlacingDef is not { } dp) return true;
-		
+		// Snapshot then consume the cross-call "we're in a stuffable right-click" flag immediately.
+		// Otherwise the static state can leak into the next FloatMenu construction — e.g. when the
+		// user opens the Dropdown left-click variant menu (More Grouped Buildings' MaterialSubMenu
+		// then iterates options positionally against `___elements` and crashes with IndexOutOfRange
+		// because our appended Hide options outnumber the visible elements).
+		bool isRightClicking = PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking;
+		BuildableDef dp = PatchInHideMenuOptionToBuildDesignatorProcessInput.CurrentPlacingDef;
+		PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking = false;
+		PatchInHideMenuOptionToBuildDesignatorProcessInput.CurrentPlacingDef = null;
+
+		if (!isRightClicking || dp == null) return true;
+
 		if (IAintBuildingThat.settings.HiddenBuildables.Contains(dp.defName))
 		{
 			options.Add(new FloatMenuOption("Taggerung_IAintBuildingThat_RestoreText".TranslateSimple() + ": " + dp.LabelCap,
@@ -168,7 +186,7 @@ static class PatchInHideMenuOptionToFloatConstructor
 			options.Add(new FloatMenuOption($"{"Taggerung_IAintBuildingThat_HideButtonText".TranslateSimple()}: {dp.LabelCap}",
 				() => IAintBuildingThat.settings.HideBuildable(dp)));
 		}
-		
+
 		if (dp.designatorDropdown is {} dd)
 		{
 			if (!IAintBuildingThat.DropdownGroupDefs.TryGetValue(dd, out var groupDefs))
@@ -200,5 +218,44 @@ static class TrackDesignator
 	static void Postfix(Designator designator)
 	{
 		if (designator != null) LatestDesignator = designator;
+	}
+}
+
+[HarmonyPatch(typeof(Designator_Build), nameof(Designator_Build.Visible), MethodType.Getter)]
+static class PatchDesignatorBuildVisibleHonourHide
+{
+	[HarmonyPostfix]
+	static void Postfix(Designator_Build __instance, ref bool __result)
+	{
+		if (!__result || __instance.PlacingDef is not { } def) return;
+		__result = IAintBuildingThat.settings.showHiddenButtons
+		           || IAintBuildingThat.settings.revealHiddenCombo.RevealActive
+		           || !IAintBuildingThat.settings.HiddenBuildables.Contains(def.defName);
+	}
+}
+
+// Patch Architect Menu Optimizer's visibility-cache prefix so its cache is bypassed for
+// any designator IBT might want to override. AMO's prefix is normally a cache short-circuit
+// (returns false → skip original); for hidden defs we force it to "let original run" so our
+// IBT postfix sees a fresh value every frame. Non-hidden defs keep AMO's cache benefit.
+[HarmonyPatch]
+static class PatchAmoVisibleCacheBypass
+{
+	[UsedImplicitly]
+	static bool Prepare() => AccessTools.TypeByName("ArchitectMenuOptimizer.Patches.Patch_Visible") != null;
+
+	[UsedImplicitly]
+	static MethodBase TargetMethod()
+	{
+		Type t = AccessTools.TypeByName("ArchitectMenuOptimizer.Patches.Patch_Visible");
+		return t == null ? null : AccessTools.Method(t, "Prefix");
+	}
+
+	[HarmonyPrefix]
+	static bool Prefix(Designator_Build __0, ref bool __result)
+	{
+		if (__0?.PlacingDef is not { } def || !IAintBuildingThat.settings.HiddenBuildables.Contains(def.defName)) return true;
+		__result = true;
+		return false;
 	}
 }

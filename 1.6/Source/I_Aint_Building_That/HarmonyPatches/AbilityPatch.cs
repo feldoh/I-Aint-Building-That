@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace IAintBuildingThat.HarmonyPatches;
@@ -23,31 +22,17 @@ class AbilityClear
 	static void Prefix() => IAintBuildingThat.settings.AllAbilityHideComponents.Clear();
 }
 
-[HarmonyPatch(typeof(Command_Ability), nameof(Command_Ability.ProcessInput))]
-class ProcessInputPatch
-{
-	static bool Prefix(Command_Ability __instance, Event ev)
-	{
-		if (ev is not { button: 1 } || !Input.GetKey(KeyCode.LeftAlt) || __instance.Ability.CompOfType<CompAbilityHide>() is not { } compAbilityHide) return true;
-
-		string menuText = compAbilityHide.hidden
-			? "Taggerung_IAintBuildingThat_RestoreText"
-			: "Taggerung_IAintBuildingThat_HideButtonText";
-
-		Find.WindowStack.Add(new FloatMenu([
-			new FloatMenuOption(menuText.TranslateSimple(),
-				() => compAbilityHide.hidden = !compAbilityHide.hidden)
-		]));
-		return false;
-	}
-}
-
 [HarmonyPatch(typeof(Gizmo), "RightClickFloatMenuOptions", MethodType.Getter)]
 class AbilityRightClickPatch()
 {
 	static void Postfix(Gizmo __instance, ref IEnumerable<FloatMenuOption> __result)
 	{
-		if (__instance is not Command_Ability ab || ab.Ability.CompOfType<CompAbilityHide>() is not {} compAbilityHide) return;
+		// When a modifier combo is configured, only inject our option while it is held. Otherwise the
+		// injected option keeps RightClickFloatMenuOptions non-empty, so the game opens a float menu on
+		// every right-click instead of routing to ProcessInput — which breaks mods that toggle abilities
+		// (e.g. mechanoid upgrade turret auto-use) via a plain right-click.
+		if (__instance is not Command_Ability ab || ab.Ability.CompOfType<CompAbilityHide>() is not {} compAbilityHide
+		    || !IAintBuildingThat.settings.abilitiesMenuCombo.ShouldShowMenu) return;
 
 		string menuText = compAbilityHide.hidden
 			? "Taggerung_IAintBuildingThat_RestoreText"

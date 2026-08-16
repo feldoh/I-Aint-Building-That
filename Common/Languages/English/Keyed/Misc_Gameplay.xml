@@ -11,4 +11,12 @@
 	<Taggerung_IAintBuildingThat_GeneralTabText>General</Taggerung_IAintBuildingThat_GeneralTabText>
 	<Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>Show Hidden Buttons</Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>
 	<Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>When enabled disables the button hiding.</Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>
+	<Taggerung_IAintBuildingThat_ModShift>Shift</Taggerung_IAintBuildingThat_ModShift>
+	<Taggerung_IAintBuildingThat_ModCtrl>Ctrl</Taggerung_IAintBuildingThat_ModCtrl>
+	<Taggerung_IAintBuildingThat_ModAlt>Alt</Taggerung_IAintBuildingThat_ModAlt>
+	<Taggerung_IAintBuildingThat_RevealComboLabel>Reveal hidden (hold)</Taggerung_IAintBuildingThat_RevealComboLabel>
+	<Taggerung_IAintBuildingThat_RevealComboTooltip>While these modifier keys are held, hidden buildings and abilities are temporarily shown. Defaults to Ctrl + Alt. Clear all keys to disable hold-to-reveal.</Taggerung_IAintBuildingThat_RevealComboTooltip>
+	<Taggerung_IAintBuildingThat_BuildingsComboLabel>Building hide menu modifier</Taggerung_IAintBuildingThat_BuildingsComboLabel>
+	<Taggerung_IAintBuildingThat_AbilitiesComboLabel>Ability hide menu modifier</Taggerung_IAintBuildingThat_AbilitiesComboLabel>
+	<Taggerung_IAintBuildingThat_MenuComboTooltip>When set, the hide/restore right-click menu only appears while these modifier keys are held; a plain right-click then passes through to the game or other mods (fixing conflicts such as mechanoid upgrade turret auto-use toggles). Leave all keys unset to always show the menu on right-click.</Taggerung_IAintBuildingThat_MenuComboTooltip>
 </LanguageData>

@@ -8,7 +8,7 @@ public class VisibilityPlaceWorker : PlaceWorker
 	public override bool IsBuildDesignatorVisible(BuildableDef def)
 	{
 		return IAintBuildingThat.settings.showHiddenButtons ||
-		       (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt)) ||
+		       IAintBuildingThat.settings.revealHiddenCombo.RevealActive ||
 		       !IAintBuildingThat.settings.HiddenBuildables.Contains(def.defName);
 	}
 }
