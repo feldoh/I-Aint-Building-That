@@ -8,4 +8,15 @@
 	<Taggerung_IAintBuildingThat_BuildingsTabText>Edificios</Taggerung_IAintBuildingThat_BuildingsTabText>
 	<Taggerung_IAintBuildingThat_AbilitiesTabText>Habilidades</Taggerung_IAintBuildingThat_AbilitiesTabText>
 	<Taggerung_IAintBuildingThat_SettingsCategory>I Aint Building That</Taggerung_IAintBuildingThat_SettingsCategory>
+	<Taggerung_IAintBuildingThat_GeneralTabText>General</Taggerung_IAintBuildingThat_GeneralTabText>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>Mostrar botones ocultos</Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel>
+	<Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>Cuando está activado, desactiva la ocultación de botones.</Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip>
+	<Taggerung_IAintBuildingThat_ModShift>Mayús</Taggerung_IAintBuildingThat_ModShift>
+	<Taggerung_IAintBuildingThat_ModCtrl>Ctrl</Taggerung_IAintBuildingThat_ModCtrl>
+	<Taggerung_IAintBuildingThat_ModAlt>Alt</Taggerung_IAintBuildingThat_ModAlt>
+	<Taggerung_IAintBuildingThat_RevealComboLabel>Mostrar ocultos (mantener)</Taggerung_IAintBuildingThat_RevealComboLabel>
+	<Taggerung_IAintBuildingThat_RevealComboTooltip>Mientras se mantienen pulsadas estas teclas modificadoras, los edificios y habilidades ocultos se muestran temporalmente. Por defecto es Ctrl + Alt. Desmarca todas las teclas para desactivar el mostrar al mantener.</Taggerung_IAintBuildingThat_RevealComboTooltip>
+	<Taggerung_IAintBuildingThat_BuildingsComboLabel>Modificador del menú de ocultar edificios</Taggerung_IAintBuildingThat_BuildingsComboLabel>
+	<Taggerung_IAintBuildingThat_AbilitiesComboLabel>Modificador del menú de ocultar habilidades</Taggerung_IAintBuildingThat_AbilitiesComboLabel>
+	<Taggerung_IAintBuildingThat_MenuComboTooltip>Cuando se configura, el menú de ocultar/restaurar del clic derecho solo aparece mientras se mantienen pulsadas estas teclas modificadoras; entonces un clic derecho normal pasa al juego u otros mods (corrigiendo conflictos como los interruptores de uso automático de las torretas de mejora mecanoide). Deja todas las teclas sin marcar para mostrar siempre el menú con el clic derecho.</Taggerung_IAintBuildingThat_MenuComboTooltip>
 </LanguageData>
