@@ -35,7 +35,7 @@ static class PatchInHideMenuOptionToDesignator
 
 		// A configured combo opts the user in to "only show the hide menu while the combo is held",
 		// so a plain right-click passes straight through to the game / other mods.
-		if (!IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) yield break;
+		if (!IAintBuildingThat.settings.menuCombo.ShouldShowMenu) yield break;
 
 		switch (__instance)
 		{
@@ -97,7 +97,7 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 		IsRightClicking = false;
 		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null }
 		    || Find.WindowStack.IsOpen<FloatMenu>()
-		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return true;
+		    || !IAintBuildingThat.settings.menuCombo.ShouldShowMenu) return true;
 		IsRightClicking = true;
 		return true;
 	}
@@ -106,7 +106,7 @@ static class PatchInHideMenuOptionToDesignatorProcessInput
 	static void Postfix(Designator __instance, Event ev)
 	{
 		if (ev is not { button: 1 } || __instance is not Designator_Place { PlacingDef: not null } dp || Find.WindowStack.IsOpen<FloatMenu>()
-		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return;
+		    || !IAintBuildingThat.settings.menuCombo.ShouldShowMenu) return;
 		List<FloatMenuOption> floatMenuOptions = [];
 		if (dp.PlacingDef.designatorDropdown is {} dd)
 		{
@@ -151,7 +151,7 @@ static class PatchInHideMenuOptionToBuildDesignatorProcessInput
 	{
 		CurrentPlacingDef = null;
 		if (ev is not { button: 1 } || __instance is not { PlacingDef: not null } || !__instance.PlacingDef.MadeFromStuff
-		    || !IAintBuildingThat.settings.buildablesMenuCombo.ShouldShowMenu) return true;
+		    || !IAintBuildingThat.settings.menuCombo.ShouldShowMenu) return true;
 		PatchInHideMenuOptionToDesignatorProcessInput.IsRightClicking = true;
 		CurrentPlacingDef = __instance.PlacingDef;
 		return true;

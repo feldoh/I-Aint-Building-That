@@ -31,8 +31,9 @@ class AbilityRightClickPatch()
 		// injected option keeps RightClickFloatMenuOptions non-empty, so the game opens a float menu on
 		// every right-click instead of routing to ProcessInput — which breaks mods that toggle abilities
 		// (e.g. mechanoid upgrade turret auto-use) via a plain right-click.
-		if (__instance is not Command_Ability ab || ab.Ability.CompOfType<CompAbilityHide>() is not {} compAbilityHide
-		    || !IAintBuildingThat.settings.abilitiesMenuCombo.ShouldShowMenu) return;
+		if (!IAintBuildingThat.settings.enableAbilityHiding
+		    || __instance is not Command_Ability ab || ab.Ability.CompOfType<CompAbilityHide>() is not {} compAbilityHide
+		    || !IAintBuildingThat.settings.menuCombo.ShouldShowMenu) return;
 
 		string menuText = compAbilityHide.hidden
 			? "Taggerung_IAintBuildingThat_RestoreText"

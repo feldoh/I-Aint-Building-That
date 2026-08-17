@@ -15,12 +15,14 @@ namespace IAintBuildingThat
 
 		// Modifier combos. Defaults are chosen so existing users see no behaviour change:
 		//  - reveal defaults to the legacy Ctrl+Alt hold
-		//  - the menu combos default to unset, meaning the hide menu is always shown on right-click.
+		//  - the menu combo defaults to unset, meaning the hide menu is always shown on right-click.
 		//    Setting a combo opts in to "only show the menu while this combo is held", so a plain
 		//    right-click passes through to the game / other mods (e.g. mechanoid turret auto-use toggles).
 		public ModifierCombo revealHiddenCombo = ModifierCombo.DefaultReveal();
-		public ModifierCombo buildablesMenuCombo = new();
-		public ModifierCombo abilitiesMenuCombo = new();
+		public ModifierCombo menuCombo = new();
+
+		// Hard on/off switch for the ability-hiding feature, for players who don't want it at all.
+		public bool enableAbilityHiding = true;
 
 		private Vector2 _scrollPosition = Vector2.zero;
 		private string _searchQuery = string.Empty;
@@ -90,15 +92,15 @@ namespace IAintBuildingThat
 				{
 					options.CheckboxLabeled("Taggerung_IAintBuildingThat_ShowHiddenButtonsLabel".Translate(),
 						ref showHiddenButtons, "Taggerung_IAintBuildingThat_ShowHiddenButtonsTooltip".Translate());
+					options.CheckboxLabeled("Taggerung_IAintBuildingThat_EnableAbilityHidingLabel".Translate(),
+						ref enableAbilityHiding, "Taggerung_IAintBuildingThat_EnableAbilityHidingTooltip".Translate());
 
 					options.GapLine();
 
 					DrawComboRow(options, "Taggerung_IAintBuildingThat_RevealComboLabel".Translate(),
 						"Taggerung_IAintBuildingThat_RevealComboTooltip".Translate(), revealHiddenCombo);
-					DrawComboRow(options, "Taggerung_IAintBuildingThat_BuildingsComboLabel".Translate(),
-						"Taggerung_IAintBuildingThat_MenuComboTooltip".Translate(), buildablesMenuCombo);
-					DrawComboRow(options, "Taggerung_IAintBuildingThat_AbilitiesComboLabel".Translate(),
-						"Taggerung_IAintBuildingThat_MenuComboTooltip".Translate(), abilitiesMenuCombo);
+					DrawComboRow(options, "Taggerung_IAintBuildingThat_MenuComboLabel".Translate(),
+						"Taggerung_IAintBuildingThat_MenuComboTooltip".Translate(), menuCombo);
 				}
 					break;
 				case Page.Buildings:
@@ -221,31 +223,34 @@ namespace IAintBuildingThat
 
 		private static void DrawComboRow(Listing_Standard listing, string label, string tooltip, ModifierCombo combo)
 		{
-			Rect row = listing.GetRect(30f);
+			Rect row = listing.GetRect(28f);
 			if (Mouse.IsOver(row)) Widgets.DrawHighlight(row);
 			if (!tooltip.NullOrEmpty()) TooltipHandler.TipRegion(row, tooltip);
 
-			Widgets.Label(row.LeftPart(0.55f), label);
+			Text.Anchor = TextAnchor.MiddleLeft;
+			Widgets.Label(row, label);
+			Text.Anchor = TextAnchor.UpperLeft;
 
-			const float btnWidth = 64f;
-			const float btnGap = 6f;
-			const float btnHeight = 28f;
-			float x = row.xMax - (btnWidth * 3 + btnGap * 2);
-			float y = row.y + (row.height - btnHeight) / 2f;
-			combo.shift = DrawModToggle(new Rect(x, y, btnWidth, btnHeight), "Taggerung_IAintBuildingThat_ModShift".Translate(), combo.shift);
-			x += btnWidth + btnGap;
-			combo.ctrl = DrawModToggle(new Rect(x, y, btnWidth, btnHeight), "Taggerung_IAintBuildingThat_ModCtrl".Translate(), combo.ctrl);
-			x += btnWidth + btnGap;
-			combo.alt = DrawModToggle(new Rect(x, y, btnWidth, btnHeight), "Taggerung_IAintBuildingThat_ModAlt".Translate(), combo.alt);
+			// Three modifier checkboxes laid out left-to-right from the row's midpoint.
+			float x = row.x + row.width * 0.5f;
+			x = DrawModCheckbox(row, x, "Taggerung_IAintBuildingThat_ModShift".Translate(), ref combo.shift);
+			x = DrawModCheckbox(row, x, "Taggerung_IAintBuildingThat_ModCtrl".Translate(), ref combo.ctrl);
+			DrawModCheckbox(row, x, "Taggerung_IAintBuildingThat_ModAlt".Translate(), ref combo.alt);
 
 			listing.Gap(6f);
 		}
 
-		private static bool DrawModToggle(Rect rect, string label, bool value)
+		private static float DrawModCheckbox(Rect row, float x, string label, ref bool value)
 		{
-			if (value) Widgets.DrawHighlightSelected(rect);
-			if (Widgets.ButtonText(rect, label)) value = !value;
-			return value;
+			const float boxSize = 24f;
+			Widgets.Checkbox(x, row.y + (row.height - boxSize) / 2f, ref value, boxSize);
+			x += boxSize + 4f;
+
+			float labelWidth = Text.CalcSize(label).x;
+			Text.Anchor = TextAnchor.MiddleLeft;
+			Widgets.Label(new Rect(x, row.y, labelWidth, row.height), label);
+			Text.Anchor = TextAnchor.UpperLeft;
+			return x + labelWidth + 20f;
 		}
 
 		public override void ExposeData()
@@ -254,15 +259,14 @@ namespace IAintBuildingThat
 			Scribe_Collections.Look(ref HiddenBuildables, "hiddenBuildables", LookMode.Value);
 			Scribe_Values.Look(ref showHiddenButtons, "showHiddenButtons", false);
 			Scribe_Deep.Look(ref revealHiddenCombo, "revealHiddenCombo");
-			Scribe_Deep.Look(ref buildablesMenuCombo, "buildablesMenuCombo");
-			Scribe_Deep.Look(ref abilitiesMenuCombo, "abilitiesMenuCombo");
+			Scribe_Deep.Look(ref menuCombo, "menuCombo");
+			Scribe_Values.Look(ref enableAbilityHiding, "enableAbilityHiding", true);
 			if (Scribe.mode == LoadSaveMode.LoadingVars)
 			{
 				// Missing nodes (e.g. upgrading from an older config) load as null. Restore the
-				// behaviour-preserving defaults: legacy reveal combo, menu combos unset.
+				// behaviour-preserving defaults: legacy reveal combo, menu combo unset.
 				revealHiddenCombo ??= ModifierCombo.DefaultReveal();
-				buildablesMenuCombo ??= new ModifierCombo();
-				abilitiesMenuCombo ??= new ModifierCombo();
+				menuCombo ??= new ModifierCombo();
 			}
 		}
 	}

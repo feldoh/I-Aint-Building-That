@@ -20,7 +20,7 @@ internal class CompAbilityHide : CompAbilityEffect
 		IAintBuildingThat.settings.AllAbilityHideComponents.Add(this);
 	}
 
-	public override bool ShouldHideGizmo => hidden && !IAintBuildingThat.settings.showHiddenButtons && !IAintBuildingThat.settings.revealHiddenCombo.RevealActive;
+	public override bool ShouldHideGizmo => IAintBuildingThat.settings.enableAbilityHiding && hidden && !IAintBuildingThat.settings.showHiddenButtons && !IAintBuildingThat.settings.revealHiddenCombo.RevealActive;
 
 	/**
 	 * We have to override many of the methods because in the parent class they dig around in the props and assume things are set.
